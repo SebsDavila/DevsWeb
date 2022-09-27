@@ -1,0 +1,83 @@
+﻿@{
+    Layout = null;
+}
+
+<head>
+    <link href="~/css/Login.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+
+
+    <div class="login">
+        <h1>Welcome to VixRecords</h1>
+        <form method="post">
+            <input type="text" name="u" placeholder="Username" id="user" required="required" />
+            <input type="password" name="p" placeholder="Password" id="pass" required="required" />
+            <button type="button" class="btn btn-primary btn-block btn-large" id="enter">Entrar</button>
+        </form>
+    </div>
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/SweetAlert/sweetalert2.all.min.js"></script>
+    <script>
+
+        jQuery(document).ready(function ($) {
+            $('#user').focus();
+
+            $("#enter").click(function () {
+                if ($('#user').val() === '' || $("#pass").val() === '') {
+
+                    Swal.fire(
+                        'error',
+                        'Favor de ingresar usuario y contraseña',
+                        'error'
+                    );
+                }
+
+                else {
+                    var Usuario = $('#user').val();
+                    var Contraseña = $('#pass').val();
+
+                    console.log(JSON.stringify({ Usuario: Usuario, Contraseña: Contraseña }));
+
+
+                    $.ajax({
+                        url: "@Url.Action("GetUser", "Usuarios")",
+                        async: false,
+                        type: "POST",
+                        data: ({ Usuario: Usuario, Contraseña: Contraseña }),
+                        beforeSend: function (xhr, opts) {
+                        },
+                        complete: function () {
+                        },
+                        success: function (data) {
+
+                            if (data.status == true) {
+                                //location.reload();
+                                console.log(data.status);
+                                window.location.href = "/Home/Privacy";
+                            }
+                            else if(data.status == false) {
+                                Swal.fire(
+                                    'error',
+                                    data.message,
+                                    'error'
+                                );
+
+                            }
+
+                        }
+
+                    })
+
+
+                }
+            })
+        })
+    </script>
+</body>
